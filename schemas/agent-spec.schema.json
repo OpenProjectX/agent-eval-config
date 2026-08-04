@@ -1,0 +1,64 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://openprojectx.org/schemas/agent-spec.schema.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["apiVersion", "kind", "metadata", "spec"],
+  "properties": {
+    "apiVersion": {"const": "agenteval.openprojectx.io/v1alpha1"},
+    "kind": {"const": "Agent"},
+    "metadata": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "revision", "name"],
+      "properties": {
+        "id": {"type": "string", "pattern": "^[a-z][a-z0-9-]*$"},
+        "revision": {"type": "integer", "minimum": 1},
+        "name": {"type": "string", "minLength": 1}
+      }
+    },
+    "spec": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["model", "systemPrompt", "tools", "runtime", "policyProfile"],
+      "properties": {
+        "model": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["provider", "model"],
+          "properties": {
+            "provider": {"enum": ["openai", "anthropic"]},
+            "model": {"type": "string", "minLength": 1},
+            "credentialProfile": {"type": "string", "pattern": "^[a-z][a-z0-9-]*$"},
+            "temperature": {"type": "number", "minimum": 0, "maximum": 2},
+            "maxTokens": {"type": "integer", "minimum": 1, "maximum": 32768}
+          }
+        },
+        "systemPrompt": {"type": "string", "minLength": 1},
+        "tools": {
+          "type": "array",
+          "maxItems": 10,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["id", "version"],
+            "properties": {
+              "id": {"type": "string", "pattern": "^[a-z][a-z0-9.-]*$"},
+              "version": {"type": "integer", "minimum": 1}
+            }
+          }
+        },
+        "runtime": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["maxSteps", "timeoutSeconds"],
+          "properties": {
+            "maxSteps": {"type": "integer", "minimum": 1, "maximum": 10},
+            "timeoutSeconds": {"type": "integer", "minimum": 1, "maximum": 300}
+          }
+        },
+        "policyProfile": {"type": "string", "pattern": "^[a-z][a-z0-9-]*$"}
+      }
+    }
+  }
+}

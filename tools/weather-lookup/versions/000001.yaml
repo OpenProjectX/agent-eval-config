@@ -1,0 +1,21 @@
+apiVersion: agenteval.openprojectx.io/v1alpha1
+kind: Tool
+metadata:
+  id: weather.lookup
+  version: 1
+  name: Weather lookup
+spec:
+  type: builtin
+  handler: builtin.weather_lookup
+  description: Return demo weather conditions for a city.
+  inputSchema:
+    type: object
+    additionalProperties: false
+    properties:
+      city:
+        type: string
+    required: [city]
+  risk: read
+  evaluation:
+    mode: mock
+    fixture: weather-v1

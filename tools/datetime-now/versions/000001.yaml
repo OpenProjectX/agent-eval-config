@@ -1,0 +1,21 @@
+apiVersion: agenteval.openprojectx.io/v1alpha1
+kind: Tool
+metadata:
+  id: datetime.now
+  version: 1
+  name: Current date and time
+spec:
+  type: builtin
+  handler: builtin.datetime_now
+  description: Return the current date and time for an IANA timezone.
+  inputSchema:
+    type: object
+    additionalProperties: false
+    properties:
+      timezone:
+        type: string
+        description: IANA timezone, for example Asia/Shanghai.
+    required: [timezone]
+  risk: read
+  evaluation:
+    mode: deterministic

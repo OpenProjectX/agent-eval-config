@@ -1,0 +1,48 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://openprojectx.org/schemas/tool-spec.schema.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["apiVersion", "kind", "metadata", "spec"],
+  "properties": {
+    "apiVersion": {"const": "agenteval.openprojectx.io/v1alpha1"},
+    "kind": {"const": "Tool"},
+    "metadata": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "version", "name"],
+      "properties": {
+        "id": {"type": "string", "pattern": "^[a-z][a-z0-9.-]*$"},
+        "version": {"type": "integer", "minimum": 1},
+        "name": {"type": "string", "minLength": 1}
+      }
+    },
+    "spec": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "description", "inputSchema", "risk", "evaluation"],
+      "properties": {
+        "type": {"enum": ["builtin", "http", "mcp"]},
+        "description": {"type": "string", "minLength": 1},
+        "handler": {"type": "string", "pattern": "^[a-z][a-z0-9_.-]*$"},
+        "connection": {"type": "object"},
+        "inputSchema": {"type": "object"},
+        "risk": {"enum": ["read", "write", "destructive"]},
+        "credentialProfile": {"type": "string", "pattern": "^[a-z][a-z0-9-]*$"},
+        "evaluation": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["mode"],
+          "properties": {
+            "mode": {"enum": ["deterministic", "mock", "readonly-live"]},
+            "fixture": {"type": "string"}
+          }
+        }
+      },
+      "allOf": [
+        {"if": {"properties": {"type": {"const": "builtin"}}}, "then": {"required": ["handler"]}},
+        {"if": {"properties": {"type": {"enum": ["http", "mcp"]}}}, "then": {"required": ["connection"]}}
+      ]
+    }
+  }
+}

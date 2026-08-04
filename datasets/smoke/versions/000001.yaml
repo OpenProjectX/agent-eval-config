@@ -1,0 +1,16 @@
+apiVersion: agenteval.openprojectx.io/v1alpha1
+kind: Dataset
+metadata:
+  id: smoke
+  version: 1
+cases:
+  - id: arithmetic
+    input: What is 17 multiplied by 23?
+    expectedTools: [calculator.evaluate]
+    expectedContains: ['391']
+  - id: local-time
+    input: What time is it in Asia/Shanghai?
+    expectedTools: [datetime.now]
+  - id: weather
+    input: What is the demo weather in Guangzhou?
+    expectedTools: [weather.lookup]
