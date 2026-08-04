@@ -15,7 +15,13 @@ ROOT = Path(__file__).resolve().parents[1]
 AGENT_PATH = re.compile(r"^agents/([^/]+)/revisions/([0-9]{6})\.yaml$")
 
 
-def changed_paths(base: str | None) -> list[str]:
+def changed_paths(base: str | None, paths_file: Path | None = None) -> list[str]:
+    if paths_file is not None:
+        return [
+            line.strip()
+            for line in paths_file.read_text(encoding="utf-8").splitlines()
+            if line.strip()
+        ]
     if base and base != "0" * 40:
         command = ["git", "diff", "--name-only", base, "HEAD"]
     else:
@@ -28,9 +34,10 @@ def changed_paths(base: str | None) -> list[str]:
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--base")
+    parser.add_argument("--paths-file", type=Path)
     args = parser.parse_args()
     specs = set()
-    for relative in changed_paths(args.base):
+    for relative in changed_paths(args.base, args.paths_file):
         match = AGENT_PATH.match(relative)
         if not match:
             continue

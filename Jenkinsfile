@@ -28,8 +28,13 @@ pipeline {
         stage('Validate specifications') {
             steps {
                 sh '''
-                    python3 -m pip install --user -r requirements.txt
-                    python3 scripts/validate.py
+                    docker run --rm \
+                      -e PIP_INDEX_URL -e PIP_CACHE_DIR=/pip-cache \
+                      -e HTTP_PROXY -e HTTPS_PROXY -e NO_PROXY \
+                      -v agent-eval-config-pip-cache:/pip-cache \
+                      -v "$PWD:/workspace" -w /workspace \
+                      python:3.12-slim sh -c \
+                      'python -m pip install -r requirements.txt && python scripts/validate.py'
                 '''
             }
         }
@@ -40,8 +45,18 @@ pipeline {
             }
             steps {
                 sh '''
-                    python3 scripts/changed_agents.py \
-                      --base "${GIT_PREVIOUS_SUCCESSFUL_COMMIT:-}" \
+                    if [ -n "${GIT_PREVIOUS_SUCCESSFUL_COMMIT:-}" ]; then
+                      git diff --name-only "$GIT_PREVIOUS_SUCCESSFUL_COMMIT" HEAD > changed-paths.txt
+                    else
+                      git show --pretty=format: --name-only HEAD > changed-paths.txt
+                    fi
+                    docker run --rm \
+                      -e PIP_INDEX_URL -e PIP_CACHE_DIR=/pip-cache \
+                      -e HTTP_PROXY -e HTTPS_PROXY -e NO_PROXY \
+                      -v agent-eval-config-pip-cache:/pip-cache \
+                      -v "$PWD:/workspace" -w /workspace \
+                      python:3.12-slim sh -c \
+                      'python -m pip install -r requirements.txt && python scripts/changed_agents.py --paths-file changed-paths.txt' \
                       > changed-agents.txt
                     echo "Changed AgentSpecs:"
                     cat changed-agents.txt
