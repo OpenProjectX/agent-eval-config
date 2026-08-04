@@ -6,7 +6,8 @@ agent, tool, dataset, and policy revisions.
 
 ## Demo contents
 
-- `demo-assistant@1`: a small tool-calling agent
+- `demo-assistant@1`: the original OpenAI example
+- `demo-assistant@2`: an Anthropic-compatible deployment example
 - `calculator.evaluate@1`: deterministic arithmetic
 - `datetime.now@1`: current date/time lookup
 - `weather.lookup@1`: mocked weather lookup for repeatable evaluations
