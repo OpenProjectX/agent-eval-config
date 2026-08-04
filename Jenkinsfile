@@ -28,9 +28,8 @@ pipeline {
         stage('Validate specifications') {
             steps {
                 sh '''
-                    python3 -m venv .venv
-                    .venv/bin/python -m pip install -r requirements.txt
-                    .venv/bin/python scripts/validate.py
+                    python3 -m pip install --user -r requirements.txt
+                    python3 scripts/validate.py
                 '''
             }
         }
@@ -41,7 +40,7 @@ pipeline {
             }
             steps {
                 sh '''
-                    .venv/bin/python scripts/changed_agents.py \
+                    python3 scripts/changed_agents.py \
                       --base "${GIT_PREVIOUS_SUCCESSFUL_COMMIT:-}" \
                       > changed-agents.txt
                     echo "Changed AgentSpecs:"
