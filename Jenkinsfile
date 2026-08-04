@@ -1,9 +1,7 @@
 @Library('jenkins-pipelines@master') _
 
 pipeline {
-    agent {
-        label 'gradle-long-running'
-    }
+    agent none
 
     options {
         ansiColor('xterm')
@@ -20,12 +18,18 @@ pipeline {
 
     stages {
         stage('Checkout') {
+            agent {
+                label 'gradle-long-running'
+            }
             steps {
                 checkout scm
             }
         }
 
         stage('Validate specifications') {
+            agent {
+                label 'gradle-long-running'
+            }
             steps {
                 sh '''
                     docker run --rm \
@@ -40,6 +44,9 @@ pipeline {
         }
 
         stage('Resolve changed agents') {
+            agent {
+                label 'gradle-long-running'
+            }
             when {
                 branch 'main'
             }
@@ -63,6 +70,11 @@ pipeline {
                     echo "Changed AgentSpecs:"
                     cat changed-agents.txt
                 '''
+                script {
+                    env.CONFIG_COMMIT = sh(
+                        script: 'git rev-parse HEAD', returnStdout: true).trim()
+                    env.CHANGED_AGENT_SPECS = readFile('changed-agents.txt').trim()
+                }
             }
         }
 
@@ -72,10 +84,9 @@ pipeline {
             }
             steps {
                 script {
-                    def configCommit = sh(
-                        script: 'git rev-parse HEAD', returnStdout: true).trim()
-                    def agents = fileExists('changed-agents.txt')
-                        ? readFile('changed-agents.txt').readLines().findAll { it.trim() }
+                    def configCommit = env.CONFIG_COMMIT
+                    def agents = env.CHANGED_AGENT_SPECS
+                        ? env.CHANGED_AGENT_SPECS.readLines().findAll { it.trim() }
                         : []
                     for (String agentSpec : agents) {
                         build job: 'AgentEval/sandbox-runner', wait: true,
@@ -93,7 +104,9 @@ pipeline {
 
     post {
         always {
-            cleanWs(notFailBuild: true)
+            node('gradle-long-running') {
+                cleanWs(notFailBuild: true)
+            }
         }
     }
 }
