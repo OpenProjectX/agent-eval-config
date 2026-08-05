@@ -91,14 +91,14 @@ pipeline {
                     for (String agentSpec : agents) {
                         def safeAgent = agentSpec.trim().split('@')[0]
                         def runId = "config-${env.BUILD_NUMBER}-${safeAgent}-${configCommit.take(8)}"
-                        build job: 'AgentEval/evaluate-agent', wait: true,
+                        build job: 'AgentEval-evaluate-agent', wait: true,
                               propagate: true, parameters: [
                             string(name: 'RUN_ID', value: runId),
                             string(name: 'CONFIG_COMMIT', value: configCommit),
                             string(name: 'AGENT_SPEC', value: agentSpec.trim()),
                             string(name: 'DATASET_SPEC', value: 'smoke@1'),
                             string(name: 'RUNNER_IMAGE', value:
-                                'ghcr.io/openprojectx/agent-eval-runner:90b114287449'),
+                                'ghcr.io/openprojectx/agent-eval-runner:4f8c299d0e6b'),
                             string(name: 'POLICY_REVISION', value: 'audit-v1')
                         ]
                     }

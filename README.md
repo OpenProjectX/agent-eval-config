@@ -20,7 +20,7 @@ agent, tool, dataset, and policy revisions.
 3. Run `python scripts/validate.py`.
 4. Open a pull request.
 5. Jenkins validates the configuration and triggers the dedicated
-   `AgentEval/evaluate-agent` pipeline. The pinned runner executes in OpenShell;
+   `AgentEval-evaluate-agent` pipeline. The pinned runner executes in OpenShell;
    AgentEval stores score/trace correlations while semantic payloads remain in
    Langfuse.
 
