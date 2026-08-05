@@ -19,8 +19,10 @@ agent, tool, dataset, and policy revisions.
 2. Select published tool IDs and exact versions from `tools/`.
 3. Run `python scripts/validate.py`.
 4. Open a pull request.
-5. Jenkins validates the configuration. After evaluation gates are connected,
-   promotion will update `agents/<id>/promoted.yaml`.
+5. Jenkins validates the configuration and triggers the dedicated
+   `AgentEval/evaluate-agent` pipeline. The pinned runner executes in OpenShell;
+   AgentEval stores score/trace correlations while semantic payloads remain in
+   Langfuse.
 
 Drafts and preview runs belong in the AgentEval database, not in Git. API keys
 and other credentials must be stored in Kubernetes Secrets and referenced by a

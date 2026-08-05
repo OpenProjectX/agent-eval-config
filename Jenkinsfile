@@ -89,12 +89,17 @@ pipeline {
                         ? env.CHANGED_AGENT_SPECS.readLines().findAll { it.trim() }
                         : []
                     for (String agentSpec : agents) {
-                        build job: 'AgentEval/sandbox-runner', wait: true,
+                        def safeAgent = agentSpec.trim().split('@')[0]
+                        def runId = "config-${env.BUILD_NUMBER}-${safeAgent}-${configCommit.take(8)}"
+                        build job: 'AgentEval/evaluate-agent', wait: true,
                               propagate: true, parameters: [
-                            booleanParam(name: 'CONFIG_EVALUATION_ONLY', value: true),
+                            string(name: 'RUN_ID', value: runId),
                             string(name: 'CONFIG_COMMIT', value: configCommit),
                             string(name: 'AGENT_SPEC', value: agentSpec.trim()),
-                            string(name: 'DATASET_SPEC', value: 'smoke@1')
+                            string(name: 'DATASET_SPEC', value: 'smoke@1'),
+                            string(name: 'RUNNER_IMAGE', value:
+                                'ghcr.io/openprojectx/agent-eval-runner:90b114287449'),
+                            string(name: 'POLICY_REVISION', value: 'audit-v1')
                         ]
                     }
                 }
