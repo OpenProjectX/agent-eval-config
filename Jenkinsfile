@@ -98,7 +98,7 @@ pipeline {
                             string(name: 'AGENT_SPEC', value: agentSpec.trim()),
                             string(name: 'DATASET_SPEC', value: 'smoke@1'),
                             string(name: 'RUNNER_IMAGE', value:
-                                'ghcr.io/openprojectx/agent-eval-runner:00ecb1fc1a19'),
+                                'ghcr.io/openprojectx/agent-eval-runner:e6a7ca60fdc8'),
                             string(name: 'POLICY_REVISION', value: 'audit-v1')
                         ]
                     }
