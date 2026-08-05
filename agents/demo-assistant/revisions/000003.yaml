@@ -1,0 +1,26 @@
+apiVersion: agenteval.openprojectx.io/v1alpha1
+kind: Agent
+metadata:
+  id: demo-assistant
+  revision: 3
+  name: Demo Assistant
+spec:
+  model:
+    provider: anthropic
+    model: qwen3.8-max
+    temperature: 0
+    maxTokens: 2048
+    credentialProfile: anthropic-default
+  systemPrompt: You are a concise demo assistant. Use a tool when it can provide a
+    more reliable answer. Never invent a tool result.
+  tools:
+  - id: calculator.evaluate
+    version: 1
+  - id: datetime.now
+    version: 1
+  - id: weather.lookup
+    version: 1
+  runtime:
+    maxSteps: 5
+    timeoutSeconds: 60
+  policyProfile: demo-safe
