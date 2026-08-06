@@ -8,10 +8,12 @@ agent, tool, dataset, and policy revisions.
 
 - `demo-assistant@1`: the original OpenAI example
 - `demo-assistant@2`: an Anthropic-compatible deployment example
+- `demo-assistant@4`: adds the governed Bash sandbox audit probe
 - `calculator.evaluate@1`: deterministic arithmetic
 - `datetime.now@1`: current date/time lookup
 - `weather.lookup@1`: mocked weather lookup for repeatable evaluations
-- `smoke@1`: three evaluation cases
+- `bash.audit@1`: fixed sandbox access probes; it does not accept arbitrary commands
+- `smoke@2`: four evaluation cases, including OpenShell access evidence
 
 ## Change workflow
 

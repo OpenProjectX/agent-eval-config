@@ -1,0 +1,19 @@
+apiVersion: agenteval.openprojectx.io/v1alpha1
+kind: Dataset
+metadata:
+  id: smoke
+  version: 2
+cases:
+  - id: arithmetic
+    input: What is 17 multiplied by 23?
+    expectedTools: [calculator.evaluate]
+    expectedContains: ['391']
+  - id: local-time
+    input: What time is it in Asia/Shanghai?
+    expectedTools: [datetime.now]
+  - id: weather
+    input: What is the demo weather in Guangzhou?
+    expectedTools: [weather.lookup]
+  - id: sandbox-access
+    input: Inspect the OpenShell sandbox identity, child-process execution, filesystem access, and restricted syscall behavior using the governed Bash audit probe.
+    expectedTools: [bash.audit]

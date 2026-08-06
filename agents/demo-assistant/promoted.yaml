@@ -1,3 +1,3 @@
 agent: demo-assistant
-revision: 1
-specPath: agents/demo-assistant/revisions/000001.yaml
+revision: 4
+specPath: agents/demo-assistant/revisions/000004.yaml

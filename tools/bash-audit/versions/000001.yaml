@@ -1,0 +1,21 @@
+apiVersion: agenteval.openprojectx.io/v1alpha1
+kind: Tool
+metadata:
+  id: bash.audit
+  version: 1
+  name: Bash sandbox audit
+spec:
+  type: builtin
+  handler: builtin.bash_audit
+  description: Run fixed Bash probes for identity, child processes, filesystem access, and a restricted namespace syscall.
+  inputSchema:
+    type: object
+    additionalProperties: false
+    properties:
+      probe:
+        type: string
+        enum: [identity, process, filesystem, syscall, all]
+    required: [probe]
+  risk: write
+  evaluation:
+    mode: deterministic

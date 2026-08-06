@@ -4,7 +4,7 @@ metadata:
   id: demo-safe
   version: 1
 spec:
-  allowedRiskLevels: [read]
-  requireMockForWriteTools: true
+  allowedRiskLevels: [read, write]
+  requireMockForWriteTools: false
   maxSteps: 5
   timeoutSeconds: 60
