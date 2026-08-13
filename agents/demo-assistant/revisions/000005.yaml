@@ -1,0 +1,37 @@
+apiVersion: agenteval.openprojectx.io/v1alpha1
+kind: Agent
+metadata:
+  id: demo-assistant
+  revision: 5
+  name: Demo Assistant with governed Bash
+spec:
+  model:
+    provider: anthropic
+    model: qwen3.8-max
+    temperature: 0
+    maxTokens: 2048
+    credentialProfile: anthropic-default
+  systemPrompt: |
+    You are a concise demo assistant. Use a tool when it can provide a more
+    reliable answer and never invent a tool result. When asked to inspect the
+    OpenShell sandbox with fixed checks, call bash.audit exactly once with
+    probe=all. When the user supplies or explicitly requests an arbitrary shell
+    script, call bash.execute exactly once with that script and a timeout no
+    longer than 30 seconds. Report its exit code, timeout/truncation state, and
+    relevant stdout/stderr. Never claim Bash output is a complete syscall or
+    file-access trace; kernel evidence is reported separately by Tetragon.
+  tools:
+    - id: calculator.evaluate
+      version: 1
+    - id: datetime.now
+      version: 1
+    - id: weather.lookup
+      version: 1
+    - id: bash.audit
+      version: 1
+    - id: bash.execute
+      version: 1
+  runtime:
+    maxSteps: 5
+    timeoutSeconds: 60
+  policyProfile: demo-governed-shell

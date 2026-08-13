@@ -9,11 +9,14 @@ agent, tool, dataset, and policy revisions.
 - `demo-assistant@1`: the original OpenAI example
 - `demo-assistant@2`: an Anthropic-compatible deployment example
 - `demo-assistant@4`: adds the governed Bash sandbox audit probe
+- `demo-assistant@5`: adds arbitrary Bash execution inside governed OpenShell
 - `calculator.evaluate@1`: deterministic arithmetic
 - `datetime.now@1`: current date/time lookup
 - `weather.lookup@1`: mocked weather lookup for repeatable evaluations
 - `bash.audit@1`: fixed sandbox access probes; it does not accept arbitrary commands
-- `smoke@2`: four evaluation cases, including OpenShell access evidence
+- `bash.execute@1`: arbitrary multiline Bash with timeout and bounded output;
+  classified destructive and intended only for governed OpenShell runs
+- `smoke@3`: five evaluation cases, including fixed access checks and arbitrary Bash
 
 ## Change workflow
 
@@ -40,3 +43,9 @@ Python code is intentionally not loaded from this repository.
 Tool implementations remain behind the AgentEval Tool Gateway. Built-in tools
 use a trusted handler name; HTTP and MCP definitions are resolved by gateway
 adapters. This keeps the agent runner image unchanged.
+
+`bash.execute` is the deliberate exception to the read-oriented demo catalog.
+Its GitOps definition grants access to the trusted runner handler; it does not
+provide isolation. OpenShell policy, non-root execution, and Tetragon observation
+must surround governed use. The runner limits scripts to 32 KiB, time to 30
+seconds, and combined output to 64 KiB, then kills the Bash process group.

@@ -1,0 +1,12 @@
+apiVersion: agenteval.openprojectx.io/v1alpha1
+kind: Policy
+metadata:
+  id: demo-governed-shell
+  version: 1
+spec:
+  # This application-level grant only exposes the tool. OpenShell remains the
+  # actual non-root filesystem, process, syscall, and network security boundary.
+  allowedRiskLevels: [read, write, destructive]
+  requireMockForWriteTools: false
+  maxSteps: 5
+  timeoutSeconds: 60
