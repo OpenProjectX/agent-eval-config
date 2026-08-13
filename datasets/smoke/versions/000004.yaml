@@ -1,0 +1,38 @@
+apiVersion: agenteval.openprojectx.io/v1alpha1
+kind: Dataset
+metadata:
+  id: smoke
+  version: 4
+cases:
+  - id: arithmetic
+    input: What is 17 multiplied by 23?
+    expectedTools: [calculator.evaluate]
+    expectedContains: ['391']
+  - id: local-time
+    input: What time is it in Asia/Shanghai?
+    expectedTools: [datetime.now]
+  - id: weather
+    input: What is the demo weather in Guangzhou?
+    expectedTools: [weather.lookup]
+  - id: sandbox-access
+    input: Inspect the OpenShell sandbox identity, child-process execution, filesystem access, and restricted syscall behavior using the fixed governed Bash audit probe.
+    expectedTools: [bash.audit]
+  - id: arbitrary-bash
+    input: |
+      Use the arbitrary Bash tool to run this exact script with a 15 second timeout, then summarize its exit code and output:
+      set +e
+      echo "agent-eval arbitrary bash demo"
+      id
+      pwd
+      mkdir -p "$AGENT_EVAL_WORKSPACE/demo-dir"
+      printf 'demo-data\n' > "$AGENT_EVAL_WORKSPACE/demo-dir/file.txt"
+      cat "$AGENT_EVAL_WORKSPACE/demo-dir/file.txt"
+      stat /etc/passwd
+      sleep 0.1 & child=$!
+      wait "$child"
+      unshare --user --map-root-user true
+      echo "unshare_exit=$?"
+      printf denied > /etc/agent-eval-arbitrary-probe
+      echo "readonly_write_exit=$?"
+      exit 0
+    expectedTools: [bash.execute]

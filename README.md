@@ -17,6 +17,8 @@ agent, tool, dataset, and policy revisions.
 - `bash.execute@1`: arbitrary multiline Bash with timeout and bounded output;
   classified destructive and intended only for governed OpenShell runs
 - `smoke@3`: five evaluation cases, including fixed access checks and arbitrary Bash
+- `smoke@4`: removes brittle verbatim-summary scoring from the Bash case while
+  preserving exact tool-selection and successful-run evaluation
 
 ## Change workflow
 
